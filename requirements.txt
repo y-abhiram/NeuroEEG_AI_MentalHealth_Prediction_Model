@@ -6,10 +6,5 @@ scikit-learn
 joblib
 matplotlib
 absl-py==2.2.0
-action-msgs==1.2.1
-action-tutorials-interfaces==0.20.5
-action-tutorials-py==0.20.5
-actionlib-msgs==4.2.4
-actuator-msgs==0.0.1
 aiofiles==24.1.0
 xhtml2pdf
