@@ -11,7 +11,7 @@ xhtml2pdf
 Flask==3.1.1
 joblib==1.4.2
 matplotlib==3.10.5
-mediapipe==0.10.21
+python-3.10.13
 numpy==2.3.2
 opencv_contrib_python==4.11.0.86
 opencv_python==4.11.0.86
