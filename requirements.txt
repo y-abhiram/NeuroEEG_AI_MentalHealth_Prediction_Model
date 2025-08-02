@@ -11,4 +11,6 @@ scipy==1.16.1
       
 xhtml2pdf==0.2.17
 tensorflow
-mediapipe
+
+mediapipe==0.9.1.0
+
