@@ -1,21 +1,4 @@
 
-# === Auto-download model from Google Drive if missing ===
-import os
-import gdown
-
-MODEL_PATH = "models/eeg_models/voting_model.pkl"
-GOOGLE_DRIVE_FILE_ID = "1Cd0Bav8E1GF8lN29_WkpLuJO9xYOLZfB"
-
-if not os.path.exists(MODEL_PATH):
-    print("Model not found. Downloading from Google Drive...")
-    url = f"https://drive.google.com/uc?id={GOOGLE_DRIVE_FILE_ID}"
-    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-    gdown.download(url, MODEL_PATH, quiet=False)
-
-    #  Ensure download succeeded
-    if not os.path.exists(MODEL_PATH):
-        raise FileNotFoundError("Model download failed. Please check your internet connection or the file ID.")
-
 from flask import Flask, render_template, request, session, redirect, url_for, send_file
 import time, csv, os
 
@@ -23,6 +6,8 @@ import datetime
 from report_generator import generate_pdf
 import numpy as np
 
+# === Auto-download model from Google Drive if missing ===
+import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Prevent TensorFlow from using GPU
 
 import matplotlib
