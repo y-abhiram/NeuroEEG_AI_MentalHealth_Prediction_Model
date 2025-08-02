@@ -10,4 +10,4 @@ numpy
 pandas
 opencv-python
 gunicorn
-mediapipe==0.10.21
+mediapipe
