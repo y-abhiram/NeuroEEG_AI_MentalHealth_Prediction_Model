@@ -1,7 +1,7 @@
 Flask==3.1.1
 joblib==1.4.2
 matplotlib==3.10.5
-mediapipe==0.10.21
+
 numpy==2.3.2
 opencv_contrib_python==4.11.0.86
 opencv_python==4.11.0.86
@@ -11,3 +11,4 @@ pyserial==3.5
 scipy==1.16.1
 tensorflow==2.18.0
 xhtml2pdf==0.2.17
+mediapipe==0.10.21
