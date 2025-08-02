@@ -2,36 +2,44 @@
 FROM python:3.10-slim
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Set working directory
+# Set work directory
 WORKDIR /app
 
-# Install system dependencies (needed by numpy, opencv, etc.)
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
+    cmake \
     libgl1-mesa-glx \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
     libxrender-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libxcb1 \
     ffmpeg \
+    git \
+    curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade pip and related tools
+# Upgrade pip
 RUN pip install --upgrade pip setuptools wheel
 
-# Copy requirement list and install
+# Copy and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy entire app into container
+# Copy entire app
 COPY . .
 
-# Expose the port (Render expects 0.0.0.0:5000)
+# Expose port (for Render)
 EXPOSE 5000
 
-# Start the server with Gunicorn
+# Start with Gunicorn
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
