@@ -12,3 +12,4 @@ action-tutorials-py==0.20.5
 actionlib-msgs==4.2.4
 actuator-msgs==0.0.1
 aiofiles==24.1.0
+xhtml2pdf
