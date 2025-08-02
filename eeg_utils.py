@@ -2,6 +2,21 @@
 import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Disable GPU for TensorFlow
 
+import joblib
+import gdown
+
+# === Auto-download Voting Ensemble model if missing ===
+MODEL_PATH = "models/eeg_models/voting_model.pkl"
+GOOGLE_DRIVE_FILE_ID = "1Cd0Bav8E1GF8lN29_WkpLuJO9xYOLZfB"
+
+if not os.path.exists(MODEL_PATH):
+    print("Voting Ensemble model not found. Downloading from Google Drive...")
+    url = f"https://drive.google.com/uc?id={GOOGLE_DRIVE_FILE_ID}"
+    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+    gdown.download(url, MODEL_PATH, quiet=False)
+    if not os.path.exists(MODEL_PATH):
+        raise FileNotFoundError("Model download failed. Check your internet or Google Drive file ID.")
+
 import numpy as np
 import pandas as pd
 import datetime, time, serial, joblib, threading
@@ -15,9 +30,14 @@ fs = 256
 buffer_seconds = 6
 samples_needed = fs * buffer_seconds
 
-model = joblib.load("/home/abhiram1289/Desktop/mentalhealth11/models/eeg_models/voting_model.pkl")
-scaler = joblib.load("/home/abhiram1289/Desktop/mentalhealth11/models/eeg_models/scaler.pkl")
-le = joblib.load("/home/abhiram1289/Desktop/mentalhealth11/models/eeg_models/label_encoder.pkl")
+#model = joblib.load("/home/abhiram1289/Desktop/mentalhealth11/models/eeg_models/voting_model.pkl")
+#scaler = joblib.load("/home/abhiram1289/Desktop/mentalhealth11/models/eeg_models/scaler.pkl")
+#le = joblib.load("/home/abhiram1289/Desktop/mentalhealth11/models/eeg_models/label_encoder.pkl")
+
+# === Load Models ===
+model = joblib.load(MODEL_PATH)
+scaler = joblib.load("models/eeg_models/scaler.pkl")
+le = joblib.load("models/eeg_models/label_encoder.pkl")
 
 eeg_collector = {
     "running": False,
