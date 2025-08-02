@@ -1,28 +1,17 @@
-# Essential build tools
-setuptools>=42
+setuptools>=65.5.0
 wheel
 
-# Web framework
 Flask==3.1.1
 gunicorn==21.2.0
 
-# Data & ML
-numpy==1.24.4
-pandas==2.0.3
-scipy==1.10.1
-tensorflow==2.12.0
 joblib==1.3.2
-
-# Visualization
-matplotlib==3.7.1  # Slight downgrade for wheel support
-
-# Computer Vision
+matplotlib==3.7.1
+numpy==1.24.4
+scipy==1.9.3
 opencv-python==4.8.1.78
 opencv-contrib-python==4.8.1.78
-mediapipe==0.9.1.0
-
-# Serial comm
+pandas==2.0.3
 pyserial==3.5
-
-# Report generation
+tensorflow==2.12.0
+mediapipe==0.9.1.0
 xhtml2pdf==0.2.17
