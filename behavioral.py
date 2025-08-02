@@ -16,11 +16,11 @@ from tensorflow.keras.models import load_model
 import mediapipe as mp
 
 # === Load Models ===
-cnn_model = load_model("/home/abhiram1289/Desktop/mentalhealth11/models/cnn_feature_extractor.h5")
-rf_model = joblib.load("/home/abhiram1289/Desktop/mentalhealth11/models/cnn_rf_model.pkl")
-scaler = joblib.load("/home/abhiram1289/Desktop/mentalhealth11/models/cnn_rf_scaler.pkl")
-label_encoder = joblib.load("/home/abhiram1289/Desktop/mentalhealth11/models/cnn_rf_label_encoder.pkl")
-emotion_model = load_model('/home/abhiram1289/Desktop/mentalhealth11/models/emotion_model.h5')
+cnn_model = load_model("models/cnn_feature_extractor.h5")
+rf_model = joblib.load("models/cnn_rf_model.pkl")
+scaler = joblib.load("models/cnn_rf_scaler.pkl")
+label_encoder = joblib.load("models/cnn_rf_label_encoder.pkl")
+emotion_model = load_model('models/emotion_model.h5')
 
 emotion_labels = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
