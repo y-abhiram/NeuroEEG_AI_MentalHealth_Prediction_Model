@@ -22,7 +22,7 @@ import time, csv, os
 import datetime 
 from report_generator import generate_pdf
 import numpy as np
-import os
+
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Prevent TensorFlow from using GPU
 
 import matplotlib
