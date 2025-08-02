@@ -807,7 +807,7 @@ def reset():
         return redirect('/dashboard')  # Back to clean dashboard
 
     return render_template('personal_info.html')
-'''
+
 if __name__ == "__main__":
     print("✅ Starting Flask server at http://127.0.0.1:5000")
     app.run(debug=False, use_reloader=False)
