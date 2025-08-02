@@ -1368,9 +1368,13 @@ def reset():
         return redirect('/dashboard')  # Back to clean dashboard
 
     return render_template('personal_info.html')
-'''
+########
 if __name__ == "__main__":
     print("✅ Starting Flask server at http://127.0.0.1:5000")
     app.run(debug=False, use_reloader=False)
-
+'''
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))  # default to 10000 if not set
+    print(f"✅ Starting Flask server at http://0.0.0.0:{port}")
+    app.run(host='0.0.0.0', port=port, debug=False, use_reloader=False)
 
