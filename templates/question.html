@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question {{ step }} of {{ total }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+       body { 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* push everything to the top */
+}
+
+
+       .container {
+  margin-top: 0; /* No space from top */
+  padding: 20px 20px; /* smaller padding */
+  border-radius: 16px;
+  max-width: 1200px;
+  width: 100%;
+  background: white;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4CAF50, #45a049, #4CAF50);
+            background-size: 200% 100%;
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .time-info { 
+            margin-bottom: 5px; 
+            color: #666; 
+            font-size: 14px;
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .question-block { 
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f5e8 100%);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(76, 175, 80, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .category { 
+  font-size: 16px; 
+  color: #4CAF50; 
+  font-weight: 600; 
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0; /* remove margin-bottom */
+  padding: 8px 16px;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 20px;
+  display: inline-block;
+}
+
+
+        .question-text { 
+            font-size: 22px; 
+            font-weight: 500; 
+            margin-bottom: 25px;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+
+        .option-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-box label {
+            display: block;
+            padding: 12px 15px;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #fafafa;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-box label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .option-box label:hover {
+            border-color: #45a049;
+            background: #f0fff0;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.25);
+        }
+
+        .option-box label:hover::before {
+            left: 100%;
+        }
+
+        .option-box input[type="radio"] { 
+            display: none; 
+        }
+
+        .option-box input[type="radio"]:checked + span {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: inline-block;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+        }
+
+        .option-box input[type="radio"]:checked + span::after {
+            content: '✓';
+            float: right;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .btns { 
+            margin-top: 40px; 
+            display: flex; 
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        button {
+            padding: 14px 28px; 
+            font-size: 16px;
+            font-weight: 500;
+            border: none; 
+            color: white; 
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-radius: 10px; 
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .back-btn { 
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .back-btn:hover {
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+            
+            .question-text {
+                font-size: 20px;
+            }
+            
+            .btns {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+
+        /* Loading animation for form submission */
+        .loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .loading button {
+            position: relative;
+        }
+
+        .loading button::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            margin: auto;
+            border: 2px solid white;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease infinite;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+    <script>
+        let behavioralStarted = false;
+
+        window.onload = () => {
+            const isRunAll = "{{ session.get('run_all_mode', False) }}";
+            if (!behavioralStarted && isRunAll === "True") {
+                fetch("/start_behavioral_background")
+                    .then(() => console.log("✅ Behavioral analysis started"))
+                    .catch(err => console.error("❌ Behavioral start error", err));
+                behavioralStarted = true;
+            }
+        };
+
+        function stopBehavioral() {
+            const isRunAll = "{{ session.get('run_all_mode', False) }}";
+            if (isRunAll === "True") {
+                fetch("/stop_behavioral_background")
+                    .then(() => console.log("🛑 Behavioral analysis stopped"))
+                    .catch(err => console.error("❌ Behavioral stop error", err));
+            }
+        }
+
+        // Add loading state on form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function() {
+                    document.body.classList.add('loading');
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2 style="margin-bottom: 3px;">📝 Question {{ step }} of {{ total }}</h2>
+
+        <div class="time-info">⏱ Time elapsed: {{ current_time }} seconds</div>
+
+        <!-- ✅ Stop behavioral only on final Submit -->
+        <form method="POST" {% if is_last %}onsubmit="stopBehavioral()" {% endif %}>
+            <div class="question-block">
+                <div class="category">{{ category }}</div>
+                <div class="question-text">{{ question }}</div>
+
+                <div class="option-box">
+                    {% for i in range(labels|length) %}
+                        <label>
+                            <input type="radio" name="answer" value="{{ i }}"
+                                   {% if answer == i %}checked{% endif %} required>
+                            <span>{{ labels[i] }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="btns">
+                {% if step > 1 %}
+                    <button type="submit" name="back" class="back-btn">⬅ Back</button>
+                {% endif %}
+
+                {% if is_last %}
+                    <button type="submit" name="submit">✅ Submit</button>
+                {% else %}
+                    <button type="submit" name="next">Next ➡</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</body>
+</html>

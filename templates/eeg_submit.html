@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EEG Analysis Complete - NeuroLink BCI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+            opacity: 0.7;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 60px 50px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .container:hover::before {
+            left: 100%;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00d4ff, #0099cc, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .title {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            color: #00ff88;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+            animation: successPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .status-message {
+            color: #00ff88;
+            margin-bottom: 30px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .stats-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: #ffffff;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-label {
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: #00d4ff;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #00ff88;
+            font-size: 1.3rem;
+        }
+
+        .description {
+            color: #b0b0b0;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 300px;
+            padding: 20px 40px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.4);
+            margin: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 45px rgba(0, 212, 255, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(-2px);
+        }
+
+        /* Brain wave animation */
+        .brainwave {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 40px;
+            opacity: 0.4;
+        }
+
+        .wave {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #00d4ff;
+            animation: brainwave 2s infinite ease-in-out;
+        }
+
+        .wave:nth-child(2) { animation-delay: 0.2s; top: 10px; }
+        .wave:nth-child(3) { animation-delay: 0.4s; top: 20px; }
+        .wave:nth-child(4) { animation-delay: 0.6s; top: 30px; }
+
+        @keyframes brainwave {
+            0%, 100% { transform: scaleX(0.5); opacity: 0.3; }
+            50% { transform: scaleX(1); opacity: 1; }
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: absolute;
+            top: 60px;
+            right: 80px;
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: statusBlink 2s infinite;
+        }
+
+        @keyframes statusBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        /* Progress bar animation */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #00ff88);
+            width: 100%;
+            animation: progressComplete 2s ease-in-out;
+        }
+
+        @keyframes progressComplete {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 40px 30px;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .title {
+                font-size: 1.6rem;
+            }
+            
+            .success-icon {
+                font-size: 3rem;
+            }
+            
+            .stat-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+
+        /* Loading animation for button */
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="brainwave">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+        <div class="status-indicator"></div>
+        
+        <div class="logo">🧠 NeuroLink BCI</div>
+        <h2 class="title">EEG Analysis Complete</h2>
+        <div class="success-icon">✅</div>
+        
+        <div class="status-message">Neural Signal Collection Successful</div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-label">
+                    <span class="stat-icon">📊</span>
+                    <span>Total Neural Samples</span>
+                </div>
+                <div class="stat-value">{{ result.total_samples if result else '0' }}</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">
+                    <span class="stat-icon">⚡</span>
+                    <span>Signal Quality</span>
+                </div>
+                <div class="stat-value">Optimal</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">
+                    <span class="stat-icon">🎯</span>
+                    <span>Processing Status</span>
+                </div>
+                <div class="stat-value">Ready</div>
+            </div>
+        </div>
+        
+        <p class="description">
+            EEG data collection has been completed successfully. Click below to process the neural signals 
+            and generate your comprehensive brain activity report.
+        </p>
+        
+        <form action="{{ url_for('eeg_submit') }}" method="post" id="submitForm">
+            <button type="submit" class="btn" id="submitBtn">
+                🚀 Generate Neural Report
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Add form submission loading state
+        document.getElementById('submitForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = '';
+        });
+
+        // Initialize particles when page loads
+        window.addEventListener('load', createParticles);
+
+        // Add stat item animation on hover
+        document.querySelectorAll('.stat-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+                this.style.background = 'rgba(0, 212, 255, 0.1)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.background = 'rgba(255, 255, 255, 0.05)';
+            });
+        });
+
+        // Animate numbers counting up
+        function animateValue(element, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                element.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Animate the sample count
+        window.addEventListener('load', function() {
+            const sampleValue = document.querySelector('.stat-value');
+            if (sampleValue && !isNaN(parseInt(sampleValue.textContent))) {
+                const finalValue = parseInt(sampleValue.textContent);
+                animateValue(sampleValue, 0, finalValue, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

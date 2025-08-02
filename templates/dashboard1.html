@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroCruxaLitix BCI Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+         .section-title {
+      font-size: 2.5rem;
+      text-align: center;
+  
+      margin-bottom: 0px;
+    }
+    .section-title .emoji {
+  font-size: 2.5rem;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+    .section-title .text {
+  background: linear-gradient(45deg, #00d4ff, #00ff88);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+            opacity: 0.7;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00d4ff, #0099cc, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .welcome-text {
+            font-size: 1.4rem;
+            color: #b0b0b0;
+            margin-bottom: 10px;
+        }
+
+        .user-name {
+            font-size: 1.8rem;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* Options Grid */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        /* Special positioning for Complete Protocol card */
+        .options-grid .option-card:last-child {
+            grid-column: 1 / -1;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .option-card:hover::before {
+            left: 100%;
+        }
+
+        .option-card:hover {
+            transform: translateY(-10px);
+            border-color: #00d4ff;
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.2);
+        }
+
+        .option-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .option-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .option-description {
+            color: #b0b0b0;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Reset Button */
+        .reset-section {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.2rem;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .option-card {
+                padding: 30px 20px;
+            }
+            
+            .container {
+                padding: 40px 15px;
+            }
+        }
+
+        /* Loading animation for buttons */
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Brain wave animation */
+        .brainwave {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 30px;
+            opacity: 0.3;
+        }
+
+        .wave {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #00d4ff;
+            animation: brainwave 2s infinite ease-in-out;
+        }
+
+        .wave:nth-child(2) { animation-delay: 0.2s; top: 8px; }
+        .wave:nth-child(3) { animation-delay: 0.4s; top: 16px; }
+        .wave:nth-child(4) { animation-delay: 0.6s; top: 24px; }
+
+        @keyframes brainwave {
+            0%, 100% { transform: scaleX(0.5); opacity: 0.3; }
+            50% { transform: scaleX(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <div class="header">
+                     <h1 class="section-title">
+  <span class="emoji">🧠</span> 
+  <span class="text">NeuroCruxaLitix BCI Dashboard</span>
+  
+</h1>
+        <div class="welcome-text">Welcome ,</div>
+        <div class="user-name">{{ session['personal']['name'] if session and session.get('personal') else 'User' }}</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="options-grid">
+            <!-- Behavioral Analysis -->
+            <div class="option-card">
+                <div class="brainwave">
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                </div>
+                <div class="option-icon">🧐📷</div>
+                <h3 class="option-title">Behavioral Analysis</h3>
+                <p class="option-description">
+                     Real-time facial behavior analysis using camera-based detection of expressions, eye blink rate, face tilt, and micro-movements.
+                </p>
+                <a href="{{ url_for('run_behavioral') if url_for else '#' }}" class="btn btn-primary">Initialize Scan</a>
+            </div>
+
+            <!-- Questionnaire -->
+            <div class="option-card">
+                <div class="brainwave">
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                </div>
+                <div class="option-icon">📋</div>
+                <h3 class="option-title">Neural Questionnaire</h3>
+                <p class="option-description">
+                     Structured cognitive questionnaire designed to assess mental state and classify stress levels for brain-computer interface integration.
+                </p>
+                <a href="{{ url_for('questionnaire_menu') if url_for else '#' }}" class="btn btn-primary">Begin Assessment</a>
+            </div>
+
+            <!-- EEG Analysis -->
+            <div class="option-card">
+                <div class="brainwave">
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                </div>
+                <div class="option-icon">🧠⚡📈</div>
+                <h3 class="option-title">EEG Signal Analysis</h3>
+                <p class="option-description">
+                     Real-time electroencephalography (EEG) monitoring with advanced neural signal processing for detecting stress patterns and mental health disorders
+                </p>
+                <a href="{{ url_for('run_eeg') if url_for else '#' }}" class="btn btn-primary">Start Recording</a>
+            </div>
+
+            <!-- Run All -->
+            <div class="option-card">
+                <div class="brainwave">
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                    <div class="wave"></div>
+                </div>
+                <div class="option-icon">🧠⚡📷📋</div>
+                <h3 class="option-title">Brain-Behavior Assessment</h3>
+                <p class="option-description">
+                    Execute the full Neural Interface Protocol with parallel processing of behavioral, cognitive assessment, and EEG analysis modules
+                </p>
+                <a href="{{ url_for('run_all_sequence') if url_for else '#' }}" class="btn btn-primary">Launch Protocol</a>
+            </div>
+        </div>
+
+        <!-- Reset Section -->
+        <div class="reset-section">
+            <button onclick="window.location.href='/reset'" class="btn btn-secondary">
+                🔄 Reset Neural Session
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Add button loading states
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.classList.contains('btn-secondary')) {
+                    this.classList.add('loading');
+                    setTimeout(() => {
+                        this.classList.remove('loading');
+                    }, 2000);
+                }
+            });
+        });
+
+        // Initialize particles when page loads
+        window.addEventListener('load', createParticles);
+
+        // Add hover sound effect simulation
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                // You could add audio feedback here if needed
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

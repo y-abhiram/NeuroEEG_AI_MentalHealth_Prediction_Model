@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EEG Interface</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+      color: #ffffff;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #00d4ff;
+      border-radius: 50%;
+      animation: float 6s infinite linear;
+      opacity: 0.7;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) translateX(0px); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
+    }
+
+    .eeg-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      min-height: 90vh;
+      transform: scale(0.88);
+      position: relative;
+      z-index: 10;
+    }
+
+    .eeg-panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(0, 212, 255, 0.3);
+      border-radius: 30px;
+      padding: 60px 50px;
+      text-align: center;
+      max-width: 700px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 20px 60px rgba(0, 212, 255, 0.1);
+    }
+
+    .brain-icon {
+      font-size: 5rem;
+      color: #00d4ff;
+      margin-bottom: 30px;
+      animation: brainPulse 2s infinite;
+    }
+
+    @keyframes brainPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .eeg-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(45deg, #00d4ff, #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+    }
+
+    .eeg-description {
+      font-size: 1.2rem;
+      color: #b0b0b0;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .duration-info {
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 40px;
+      color: #00d4ff;
+      font-weight: 600;
+    }
+
+    .start-btn {
+      background: linear-gradient(45deg, #00d4ff, #0099cc);
+      color: white;
+      border: none;
+      padding: 20px 50px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
+      text-transform: uppercase;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 20px 50px rgba(0, 212, 255, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating animated particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- EEG Content -->
+  <div class="eeg-container">
+    <div class="eeg-panel">
+      <div class="brain-icon">🧠</div>
+      <h2 class="eeg-title">EEG Signal Analysis</h2>
+      <p class="eeg-description">
+        Prepare for advanced neural signal acquisition and real-time brainwave analysis.
+        Ensure optimal electrode contact and minimize movement artifacts.
+      </p>
+      <div class="duration-info">
+        <strong>⏱️ Record for a minimum of 60 seconds to ensure reliable EEG data quality.</strong><br>
+        High-precision electroencephalography data capture
+      </div>
+      <form action="{{ url_for('eeg_collect') }}" method="post">
+  <input type="text" name="port" placeholder="Enter Serial Port (e.g., /dev/ttyACM0)" required
+         style="padding: 10px; border-radius: 10px; margin-bottom: 20px; width: 80%; font-size: 1rem;"><br>
+ 
+</form>
+
+      <form action="{{ url_for('eeg_collect') }}" method="post">
+        <button type="submit" class="start-btn">⚡ Initialize EEG Recording</button>
+      </form>
+ 
+   </div>
+   
+  </div>
+
+  <!-- JS for particles  <button type="submit" class="start-btn">⚡ Initialize EEG Recording</button>-->
+  <script>
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 50;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    window.addEventListener('load', createParticles);
+  </script>
+</body>
+</html>
+

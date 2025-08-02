@@ -1,0 +1,2 @@
+abhi,21,yalla@gmail.com,Male,19,Severe,21,Severe,20,Moderate,Not Suggestive,302.48,Error: cannot import name 'run_behavioral_data_merge' from 'behavioral' (/home/abhiram1289/Desktop/mentalhealth11/behavioral.py),Error: cannot import name 'run_eeg_merge' from 'eeg_utils' (/home/abhiram1289/Desktop/mentalhealth11/eeg_utils.py)
+abhi,21,yalla@gmail.com,Male,18,Severe,18,Moderately Severe,21,Moderate,Not Suggestive,323.48,Unavailable,Unavailable,Parse Error,Parse Error

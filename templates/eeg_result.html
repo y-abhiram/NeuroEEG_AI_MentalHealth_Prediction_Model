@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EEG Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4CAF50, #2196F3, #FF9800, #4CAF50);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 600;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f5e8 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(76, 175, 80, 0.1);
+        }
+
+        h3 {
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 600;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        h3:first-of-type {
+            margin-top: 0;
+        }
+
+        ul {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 20px;
+        }
+
+        ul ul {
+            background: #ffffff;
+            margin-top: 10px;
+            margin-bottom: 0;
+            border: 1px solid #dee2e6;
+        }
+
+        li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            color: #495057;
+            font-size: 16px;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .downloads {
+            margin-top: 30px;
+        }
+
+        .downloads ul {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border: 1px solid rgba(33, 150, 243, 0.2);
+        }
+
+        .downloads a {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .downloads a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .back-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            h3 {
+                font-size: 18px;
+            }
+            
+            .downloads a {
+                display: block;
+                margin-bottom: 10px;
+                margin-right: 0;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 EEG Session Summary</h1>
+
+        <div class="section">
+            <h3>👤 Personal Info</h3>
+            <ul>
+                <li><strong>Name:</strong> {{ personal.name }}</li>
+                <li><strong>Age:</strong> {{ personal.age }}</li>
+                <li><strong>Email:</strong> {{ personal.email }}</li>
+                <li><strong>Gender:</strong> {{ personal.gender }}</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>📊 EEG Result</h3>
+            <ul>
+                <li><strong>Rule-Based State:</strong> {{ result.rule_based }}</li>
+                <li><strong>Total EEG Samples:</strong> {{ result.total_samples }}</li>
+                <li><strong>ML Label Summary:</strong>
+                    <ul>
+                        {% for label, count in result.ml_summary.items() %}
+                            <li>{{ label }}: {{ count }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="section downloads">
+            <h3>📎 Downloads</h3>
+            <ul>
+                <li><a href="{{ url_for('download', filename=pdf_path) }}">Download PDF</a></li>
+                <li><a href="{{ url_for('download', filename=csv_path) }}">Download CSV</a></li>
+            </ul>
+        </div>
+
+        <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

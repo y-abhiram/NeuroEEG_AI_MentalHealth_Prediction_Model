@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question {{ step }} of {{ total }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; }
+        .question-block { margin-bottom: 30px; }
+        .category { font-size: 18px; color: #4CAF50; font-weight: bold; }
+        .question-text { font-size: 20px; font-weight: bold; margin-top: 10px; }
+        .option-box label {
+            display: block;
+            padding: 10px;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .option-box input[type="radio"] { display: none; }
+        .option-box input[type="radio"]:checked + span {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .btns { margin-top: 30px; display: flex; gap: 20px; }
+        button {
+            padding: 10px 20px; font-size: 1em;
+            border: none; color: white; background-color: #4CAF50;
+            border-radius: 5px; cursor: pointer;
+        }
+        .back-btn { background-color: #888; }
+        .time-info { margin-top: 10px; color: #555; }
+    </style>
+</head>
+<body>
+    <h2>📝 Question {{ step }} of {{ total }}</h2>
+    <div class="time-info">⏱ Time so far: {{ current_time }} seconds</div>
+  <form method="POST">
+    <div class="question-block">
+        <div class="category">{{ category }}</div>
+        <div class="question-text">{{ question }}</div>
+
+        <div class="option-box">
+            {% for i in range(labels|length) %}
+                <label>
+                    <input type="radio" name="answer" value="{{ i }}"
+                           {% if answer == i %}checked{% endif %} required>
+                    <span>{{ labels[i] }}</span>
+                </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="btns">
+        {% if step > 1 %}
+            <button type="submit" name="back">⬅ Back</button>
+        {% endif %}
+
+        {% if is_last %}
+            <button type="submit" formaction="{{ url_for('submit') }}">✅ Submit</button>
+        {% else %}
+            <button type="submit" name="next">Next ➡</button>
+        {% endif %}
+    </div>
+</form>
+
+  
+  
+  <!--
+    <form method="POST">
+        <div class="question-block">
+            <div class="category">{{ category | upper }} Questionnaire</div>
+            <div class="question-text">{{ question }}</div>
+
+            <div class="option-box">
+                {% for i in range(labels|length) %}
+                    <label>
+                        <input type="radio" name="answer" value="{{ i }}" required>
+                        <span>{{ labels[i] }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="btns">
+            {% if step > 1 %}
+                <button type="submit" name="go_back" class="back-btn">⬅ Go Back</button>
+            {% endif %}
+            <button type="submit">Next ➡</button>
+        </div>
+    </form>
+    -->
+</body>
+</html>
+
+<!--
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Question {{ step }} of {{ total }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; }
+        .question-box { margin-bottom: 20px; font-size: 1.2em; font-weight: bold; }
+        .option-box label {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option-box input[type="radio"] { display: none; }
+        .option-box input[type="radio"]:checked + span {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>📝 Question {{ step }} of {{ total }}</h2>
+    <form method="POST">
+        <div class="question-box">{{ question }}</div>
+        <div class="option-box">
+            {% for i in range(labels|length) %}
+                <label>
+                    <input type="radio" name="answer" value="{{ i }}" required>
+                    <span>{{ labels[i] }}</span>
+                </label>
+            {% endfor %}
+        </div>
+        <button type="submit">Next</button>
+    </form>
+</body>
+</html>
+-->

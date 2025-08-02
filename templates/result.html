@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assessment Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin-bottom: 10px; }
+        h2, h3 { color: #4CAF50; }
+        a button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>✅ Mental Health Assessment Report</h2>
+
+    <h3>👤 Personal Information</h3>
+    <ul>
+        <li><strong>Name:</strong> {{ personal.name }}</li>
+        <li><strong>Age:</strong> {{ personal.age }}</li>
+        <li><strong>Email:</strong> {{ personal.email }}</li>
+        <li><strong>Gender:</strong> {{ personal.gender }}</li>
+    </ul>
+    <h3>⏱ Time Summary</h3>
+   <ul>
+    <li><strong>Total Time Taken:</strong> {{ result['Total Time (seconds)'] }} seconds</li>
+   </ul>
+
+
+    <h3>📊 Assessment Results</h3>
+    <ul>
+        {% for key, value in result.items() %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('download', filename=pdf_path) }}">
+        <button>📥 Download PDF Report</button>
+    </a>
+    <div style="margin-top: 30px;">
+    <a href="{{ url_for('dashboard') }}">
+        <button>🏠 Go to Dashboard</button>
+    </a>
+    <a href="{{ url_for('questionnaire_menu') }}">
+        <button>🧠 Back to Questionnaire Menu</button>
+    </a>
+</div>
+
+</body>
+</html>
+

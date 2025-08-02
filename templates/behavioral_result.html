@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behavioral Analysis Results - NeuroLink BCI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 10px;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+            opacity: 0.7;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 8;
+            text-align: center;
+            padding: 9px 8px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+            .section-title {
+      font-size: 2.5rem;
+      text-align: center;
+  
+      margin-bottom: 0px;
+    }
+    .section-title .emoji {
+  font-size: 2.5rem;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+    .section-title .text {
+  background: linear-gradient(45deg, #00d4ff, #00ff88);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+        .title {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 0px;
+            font-weight: 600;
+        }
+
+        .analysis-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #00ff88;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+            animation: successPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes successPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .results-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .results-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .results-container:hover::before {
+            left: 100%;
+        }
+
+        .no-results {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #ff6b6b;
+            padding: 40px;
+        }
+
+        .results-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: #00d4ff;
+            transform: translateX(5px);
+        }
+
+        .result-label {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-size: 1.2rem;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        /* Download Section */
+        .download-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .download-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #00ff88, #00cc6a);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+        }
+
+        .download-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
+        }
+
+        /* Buttons */
+        .button-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #666, #888);
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 102, 102, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 102, 102, 0.4);
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: statusBlink 2s infinite;
+        }
+
+        @keyframes statusBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .title {
+                font-size: 1.6rem;
+            }
+            
+            .analysis-icon {
+                font-size: 3rem;
+            }
+            
+            .results-container {
+                padding: 25px 20px;
+            }
+            
+            .result-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+
+        /* Loading animation for buttons */
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1 class="section-title">
+  <span class="emoji">🧠</span> 
+  <span class="text">NeuroCruxaLitix</span>
+  <h2 class="title">Behavioral Analysis Results</h2>
+</h1>
+
+ 
+
+       <!-- <div class="analysis-icon">🎯</div>-->
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="results-container">
+            <div class="status-indicator"></div>
+            
+            {% if result %}
+                <div class="results-grid">
+                    {% for key, value in result.items() %}
+                        <div class="result-item">
+                            <div class="result-label">{{ key }}</div>
+                            <div class="result-value">{{ value }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results">
+                    ❌ No behavioral analysis results found.
+                    <br><br>
+                    <small>Please run the behavioral analysis first to generate results.</small>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if pdf_path %}
+        <div class="download-section">
+            <a href="{{ url_for('download', filename=pdf_path) }}" class="download-link">
+                📄 Download CSV Report
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="button-container">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                🏠 Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 40;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Initialize particles when page loads
+        window.addEventListener('load', createParticles);
+
+        // Add result item animation on load
+        document.querySelectorAll('.result-item').forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                item.style.transition = 'all 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, index * 100);
+        });
+
+        // Add button loading states
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.add('loading');
+                setTimeout(() => {
+                    this.classList.remove('loading');
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

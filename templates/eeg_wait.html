@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroLink BCI - EEG Live Monitoring</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+            opacity: 0.7;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #00d4ff, #0099cc, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #00ff88;
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        .pulse-dot {
+            width: 12px;
+            height: 12px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #waveformChart {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            min-height: 350px;
+        }
+
+        /* Data Table Section */
+        .table-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            overflow-x: auto;
+        }
+
+        .table-title {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #eegTable {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #eegTable th {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        #eegTable td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+            transition: background 0.3s ease;
+        }
+
+        #eegTable tbody tr:hover {
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        #eegTable tbody tr:first-child {
+            background: rgba(0, 255, 136, 0.1);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Submit Button */
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .submit-btn {
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Loading indicator */
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            color: #00d4ff;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 212, 255, 0.3);
+            border-top: 3px solid #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .chart-section, .table-section {
+                padding: 20px;
+            }
+            
+            #eegTable {
+                font-size: 0.8rem;
+            }
+            
+            #eegTable th, #eegTable td {
+                padding: 8px 4px;
+            }
+        }
+
+        /* Connection status */
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .connected {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+        }
+
+        .disconnected {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Connection Status -->
+    <div class="connection-status connected" id="connectionStatus">
+        🟢 Connected
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="title">
+            <span>🧠</span>
+            EEG Live Monitoring
+        </div>
+        <div class="status-indicator">
+            <div class="pulse-dot"></div>
+            Recording Neural Activity
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Chart Section -->
+        <div class="chart-section">
+            <div class="chart-title">⚡ Real-time Neural Waveform</div>
+            <canvas id="waveformChart" width="800" height="200"></canvas>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading-indicator" id="loadingIndicator">
+            <div class="loading-spinner"></div>
+            <div>Processing neural signals...</div>
+        </div>
+
+        <!-- Data Table Section -->
+        <div class="table-section">
+            <div class="table-title">📊 Live EEG Band Powers & Metrics</div>
+            <table id="eegTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Time</th>
+                        <th>Alpha</th>
+                        <th>Beta</th>
+                        <th>Theta</th>
+                        <th>Delta</th>
+                        <th>Gamma</th>
+                        <th>Spec Ent</th>
+                        <th>Samp Ent</th>
+                        <th>B/A</th>
+                        <th>T/A</th>
+                        <th>G/B</th>
+                        <th>T/B</th>
+                        <th>D/B</th>
+                        <th>(B+G)/(A+T)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- rows auto-fill -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Submit Section -->
+        <div class="submit-section">
+            <form action="{{ url_for('eeg_submit') if url_for else '#' }}" method="post">
+                <button type="submit" class="submit-btn">
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 40;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Initialize Chart - Original Simple Version
+        const ctx = document.getElementById('waveformChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [...Array(1536).keys()],
+                datasets: [{
+                    label: 'EEG Signal',
+                    data: [],
+                    borderColor: 'blue',
+                    borderWidth: 1,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                animation: false,
+                scales: {
+                    y: {
+                        suggestedMin: -100,
+                        suggestedMax: 100
+                    }
+                }
+            }
+        });
+
+        let rowCount = 0;
+        const maxRows = 10;
+        let isConnected = true;
+
+        function updateConnectionStatus(connected) {
+            const statusEl = document.getElementById('connectionStatus');
+            if (connected) {
+                statusEl.className = 'connection-status connected';
+                statusEl.innerHTML = '🟢 Connected';
+            } else {
+                statusEl.className = 'connection-status disconnected';
+                statusEl.innerHTML = '🔴 Disconnected';
+            }
+            isConnected = connected;
+        }
+
+        function updateLive() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            
+            if (!isConnected) {
+                loadingIndicator.style.display = 'block';
+            }
+
+            fetch('/eeg_live_data')
+                .then(res => {
+                    if (!res.ok) throw new Error('Connection failed');
+                    return res.json();
+                })
+                .then(data => {
+                    updateConnectionStatus(true);
+                    loadingIndicator.style.display = 'none';
+                    
+                    if (data.status !== 'ok') return;
+
+                    // Update waveform - Original Simple Version
+                    chart.data.datasets[0].data = data.waveform;
+                    chart.update();
+
+                    // Compute ratios
+                    const A = data.bands.Alpha;
+                    const B = data.bands.Beta;
+                    const T = data.bands.Theta;
+                    const D = data.bands.Delta;
+                    const G = data.bands.Gamma;
+                    const timestamp = data.timestamp;
+
+                    const ba = A ? (B / A).toFixed(2) : '0.00';
+                    const ta = A ? (T / A).toFixed(2) : '0.00';
+                    const gb = B ? (G / B).toFixed(2) : '0.00';
+                    const tb = B ? (T / B).toFixed(2) : '0.00';
+                    const db = B ? (D / B).toFixed(2) : '0.00';
+                    const overall = (A + T) ? ((B + G) / (A + T)).toFixed(2) : '0.00';
+
+                    const row = document.createElement('tr');
+                    rowCount++;
+
+                    row.innerHTML = `
+                        <td>${rowCount}</td>
+                        <td>${timestamp}</td>
+                        <td>${A.toFixed(2)}</td>
+                        <td>${B.toFixed(2)}</td>
+                        <td>${T.toFixed(2)}</td>
+                        <td>${D.toFixed(2)}</td>
+                        <td>${G.toFixed(2)}</td>
+                        <td>${data.entropy.toFixed(3)}</td>
+                        <td>${data.samp_entropy.toFixed(3)}</td>
+                        <td>${ba}</td>
+                        <td>${ta}</td>
+                        <td>${gb}</td>
+                        <td>${tb}</td>
+                        <td>${db}</td>
+                        <td>${overall}</td>
+                    `;
+
+                    const table = document.querySelector("#eegTable tbody");
+                    table.insertBefore(row, table.firstChild);
+                    while (table.rows.length > maxRows) {
+                        table.deleteRow(-1);
+                    }
+                })
+                .catch(error => {
+                    console.error('EEG data fetch error:', error);
+                    updateConnectionStatus(false);
+                    loadingIndicator.style.display = 'block';
+                });
+        }
+
+        // Initialize particles and start updates
+        window.addEventListener('load', () => {
+            createParticles();
+            updateLive(); // Initial load
+        });
+
+        setInterval(updateLive, 2000);  // every 2s
+
+        // Add submit button loading state
+        document.querySelector('.submit-btn').addEventListener('click', function() {
+            this.style.opacity = '0.7';
+            this.innerHTML = '⏳ Processing...';
+        });
+    </script>
+</body>
+</html>

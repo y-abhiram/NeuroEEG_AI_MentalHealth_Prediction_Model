@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Behavioral Analysis Live</title>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script defer src="/static/js/behavioral.js"></script>
+    <style>
+        video, canvas {
+            width: 640px;
+            height: 480px;
+            border: 1px solid #444;
+            margin-bottom: 10px;
+        }
+        #metrics {
+            font-family: Arial;
+            margin-top: 15px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Behavioral Analysis - Live</h2>
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <div id="metrics"></div>
+    <button id="stopBtn" disabled>Stop and Save</button>
+
+    <div id="resultLinks" style="margin-top: 20px;"></div>
+</body>
+</html>
+

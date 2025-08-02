@@ -1,0 +1,3 @@
+ear,blink_rate,smile_ratio,brow_furrow_score,movement_code,tilt_code,emotion,fatigue_score,Predicted_Label
+0.0,0,0.0,0.0,1,0,0,0.0,Stressed
+0.1915276947075869,24,6506919.393998975,133.13526955694348,1,0,0,4.95635422896931,Relaxed
