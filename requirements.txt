@@ -11,25 +11,15 @@ action-tutorials-interfaces==0.20.5
 action-tutorials-py==0.20.5
 actionlib-msgs==4.2.4
 actuator-msgs==0.0.1
-aext-assistant @ file:///croot/aext-assistant_1717062903753/work
-aext-assistant-server @ file:///croot/aext-assistant-server_1717059974755/work
-aext-core @ file:///croot/aext-core_1717056379821/work
-aext-core-server @ file:///croot/aext-core-server_1717075024023/work
-aext-panels @ file:///croot/aext-panels_1717062487916/work
-aext-panels-server @ file:///croot/aext-panels-server_1717060113417/work
-aext-share-notebook @ file:///croot/aext-share-notebook_1717059281631/work
-aext-share-notebook-server @ file:///croot/aext-share-notebook-server_1717057937757/work
-aext-shared @ file:///croot/aext-shared_1716991085756/work
-aiobotocore @ file:///croot/aiobotocore_1714464387507/work
 aiofiles==24.1.0
-aiohttp @ file:///croot/aiohttp_1715108769648/work
+
 aioice==0.9.0
 aioitertools @ file:///tmp/build/80754af9/aioitertools_1607109665762/work
 aiortc==1.10.1
 aiosignal @ file:///tmp/build/80754af9/aiosignal_1637843061372/work
-alabaster @ file:///croot/alabaster_1718201490751/work
+
 alembic==1.16.1
-altair @ file:///work/perseverance-python-buildout/croot/altair_1698866618831/work
+
 ament-cmake-test==1.3.11
 ament-copyright==0.12.11
 ament-cpplint==0.12.11
@@ -41,12 +31,8 @@ ament-package==0.14.0
 ament-pep257==0.12.11
 ament-uncrustify==0.12.11
 ament-xmllint==0.12.11
-anaconda-anon-usage @ file:///croot/anaconda-anon-usage_1710965072196/work
-anaconda-catalogs @ file:///work/perseverance-python-buildout/croot/anaconda-catalogs_1701755653155/work
-anaconda-client @ file:///croot/anaconda-client_1708640631824/work
-anaconda-cloud-auth @ file:///croot/anaconda-cloud-auth_1713991386423/work
-anaconda-navigator @ file:///croot/anaconda-navigator_1713464016024/work
-anaconda-project @ file:///croot/anaconda-project_1706049196717/work
+
+
 angles==1.15.0
 aniso8601==10.0.0
 annotated-types @ file:///croot/annotated-types_1709542908624/work
