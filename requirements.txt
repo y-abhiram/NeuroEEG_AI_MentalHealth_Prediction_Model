@@ -4,7 +4,7 @@ joblib
 matplotlib
 pyserial
 scipy
-tensorflow==2.13.0
+tensorflow==2.11.1
 xhtml2pdf
 html5lib
 numpy
