@@ -14,9 +14,6 @@ mediapipe
 scikit-learn
 seaborn
 keras
-Pillow
-
-             
 imutils          
 requests          
-pyserial          
+      
