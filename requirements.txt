@@ -12,3 +12,11 @@ opencv-python
 gunicorn
 mediapipe
 scikit-learn
+seaborn
+keras
+Pillow
+
+dlib              
+imutils          
+requests          
+pyserial          
