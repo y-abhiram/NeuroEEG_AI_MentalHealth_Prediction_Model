@@ -11,3 +11,4 @@ pandas
 opencv-python
 gunicorn
 mediapipe
+scikit-learn
