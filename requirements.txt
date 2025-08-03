@@ -16,7 +16,7 @@ seaborn
 keras
 Pillow
 
-dlib              
+             
 imutils          
 requests          
 pyserial          
