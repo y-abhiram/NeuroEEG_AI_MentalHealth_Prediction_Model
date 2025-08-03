@@ -13,7 +13,6 @@ opencv-python
 mediapipe
 scikit-learn==1.4.2
 seaborn
-#keras==2.13.1
 imutils          
 requests    
 gdown
