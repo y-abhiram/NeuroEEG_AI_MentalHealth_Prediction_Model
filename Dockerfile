@@ -31,15 +31,20 @@ RUN apt-get update && apt-get install -y \
 # Upgrade pip
 RUN pip install --upgrade pip setuptools wheel
 
-# Copy and install Python dependencies
+# Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy entire app
+# Copy app and models explicitly
 COPY . .
+# OR for safety:
+# COPY models/ ./models/
 
-# Expose port (for Render)
+# Expose port for Render
 EXPOSE 5000
+
+# Optional: Add health check
+# HEALTHCHECK CMD curl --fail http://localhost:5000/health || exit 1
 
 # Start with Gunicorn
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
