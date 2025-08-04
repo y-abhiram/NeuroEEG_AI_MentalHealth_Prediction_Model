@@ -16,7 +16,7 @@ from tensorflow.keras.models import load_model
 import mediapipe as mp
 
 # === Load Models ===
-cnn_model = load_model("models/cnn_feature_extractor1.h5", compile=False)
+cnn_model = load_model("models/cnn_feature_extractor1_resaved.h5", compile=False)
 rf_model = joblib.load("models/cnn_rf_model.pkl")
 scaler = joblib.load("models/cnn_rf_scaler.pkl")
 label_encoder = joblib.load("models/cnn_rf_label_encoder.pkl")
